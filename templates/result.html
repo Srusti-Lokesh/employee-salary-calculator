@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Salary Breakdown</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <section class="hero compact">
+      <p class="eyebrow">Calculation complete</p>
+      <h1>Salary Breakdown</h1>
+      <p>{{ employee.name }} • {{ employee.employee_id }} • {{ employee.department }}</p>
+    </section>
+
+    <section class="summary-grid">
+      <div class="metric"><span>Base Salary</span><strong>₹{{ '%.2f'|format(breakdown.base_salary) }}</strong></div>
+      <div class="metric"><span>Allowances</span><strong>₹{{ '%.2f'|format(breakdown.total_allowances) }}</strong></div>
+      <div class="metric"><span>Gross Salary</span><strong>₹{{ '%.2f'|format(breakdown.gross_salary) }}</strong></div>
+      <div class="metric highlight"><span>Net Salary</span><strong>₹{{ '%.2f'|format(breakdown.net_salary) }}</strong></div>
+    </section>
+
+    <section class="two-col">
+      <div class="card">
+        <h2>Allowances</h2>
+        <table><tbody>
+          {% for key, amount in breakdown.allowances.items() %}
+          <tr><td>{{ rules.allowances[key].label }}</td><td>₹{{ '%.2f'|format(amount) }}</td></tr>
+          {% endfor %}
+          <tr class="total"><td>Total allowances</td><td>₹{{ '%.2f'|format(breakdown.total_allowances) }}</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card">
+        <h2>Deductions</h2>
+        <table><tbody>
+          {% for key, amount in breakdown.deductions.items() %}
+          <tr><td>{{ rules.deductions[key].label if key in rules.deductions else 'Income Tax' }}</td><td>₹{{ '%.2f'|format(amount) }}</td></tr>
+          {% endfor %}
+          <tr class="total"><td>Total deductions</td><td>₹{{ '%.2f'|format(breakdown.total_deductions) }}</td></tr>
+        </tbody></table>
+      </div>
+    </section>
+
+    <section class="card formula">
+      <h2>Calculation flow</h2>
+      <p><strong>Gross Salary</strong> = Base Salary + Total Allowances</p>
+      <p><strong>Net Salary</strong> = Gross Salary − Total Deductions</p>
+      <p class="note">This calculator uses the configurable rules shipped with the project and is intended for educational use.</p>
+      <a class="secondary-button" href="{{ url_for('index') }}">Calculate another employee</a>
+    </section>
+  </main>
+</body>
+</html>
